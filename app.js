@@ -976,7 +976,18 @@ function renderReport(title, periodLabel, list, summary){
     const v = Number(summary.vatByRate?.[r] || 0);
     return b > 0 || v > 0;
   });
+function summarizeByProvider(invoiceList){
+  const map = new Map(); // providerName -> total
 
+  for(const inv of invoiceList){
+    const name = (inv.providerName || "Proveedor").trim() || "Proveedor";
+    map.set(name, (map.get(name) || 0) + safeNum(inv.total));
+  }
+
+  return [...map.entries()]
+    .map(([provider, total]) => ({ provider, total: +total.toFixed(2) }))
+    .sort((a,b) => b.total - a.total);
+}
   const vatLines = (usedRates.length ? usedRates : ["0"]).map(r => {
     const b = money(summary.baseByRate?.[r] || 0);
     const v = money(summary.vatByRate?.[r] || 0);
@@ -1028,6 +1039,26 @@ function renderReport(title, periodLabel, list, summary){
     </div>
   `;
   out.appendChild(catBox);
+    // --- Listado completo por proveedor ---
+  const provSum = summarizeByProvider(list);
+
+  const provBox = el("div","mt");
+  const provLines = provSum.length
+    ? provSum.map(p => `<div>${p.provider}: <b>${money(p.total)}</b></div>`).join("")
+    : "—";
+
+  provBox.innerHTML = `
+    <div class="item" style="margin-top:10px;">
+      <div>
+        <div class="item__title">Listado por proveedor</div>
+        <div class="item__meta">Total por proveedor (ordenado de mayor a menor)</div>
+      </div>
+      <div style="text-align:right">
+        ${provLines}
+      </div>
+    </div>
+  `;
+  out.appendChild(provBox);
   const actions = el("div","row mt");
   const btnCsv = el("button","btn btn--secondary");
   btnCsv.textContent = "Exportar CSV";
