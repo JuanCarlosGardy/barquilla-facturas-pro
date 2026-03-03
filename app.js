@@ -919,16 +919,26 @@ function summarizeInvoices(list){
   return sum;
 }
 function summarizeByCategory(invoiceList){
-  const map = new Map(); // category -> total
+  const map = new Map(); // category -> { base, vat, total }
 
   for(const inv of invoiceList){
     const prov = providersCache.find(p => p.id === inv.providerId);
     const cat = (prov?.category || "Sin categoría").trim() || "Sin categoría";
-    map.set(cat, (map.get(cat) || 0) + safeNum(inv.total));
+
+    const cur = map.get(cat) || { base: 0, vat: 0, total: 0 };
+    cur.base += safeNum(inv.base);
+    cur.vat += safeNum(inv.vatAmount);
+    cur.total += safeNum(inv.total);
+    map.set(cat, cur);
   }
 
   return [...map.entries()]
-    .map(([category, total]) => ({ category, total: +total.toFixed(2) }))
+    .map(([category, v]) => ({
+      category,
+      base: +v.base.toFixed(2),
+      vat: +v.vat.toFixed(2),
+      total: +v.total.toFixed(2)
+    }))
     .sort((a,b) => b.total - a.total);
 }
 function renderReport(title, periodLabel, list, summary){
@@ -1023,8 +1033,10 @@ function summarizeByProvider(invoiceList){
   const catSum = summarizeByCategory(list);
 
   const catBox = el("div","mt");
-  const catLines = catSum.length
-    ? catSum.map(c => `<div>${c.category}: <b>${money(c.total)}</b></div>`).join("")
+    const catLines = catSum.length
+    ? catSum.map(c =>
+        `<div>${c.category}: <b>${money(c.total)}</b><div class="muted small">Base ${money(c.base)} · IVA ${money(c.vat)}</div></div>`
+      ).join("")
     : "—";
 
   catBox.innerHTML = `
