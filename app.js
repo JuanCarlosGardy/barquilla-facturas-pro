@@ -1008,20 +1008,43 @@ function summarizeByProvider(invoiceList){
     }))
     .sort((a,b) => b.total - a.total);
 }
-  const vatLines = (usedRates.length ? usedRates : ["0"]).map(r => {
-    const b = money(summary.baseByRate?.[r] || 0);
-    const v = money(summary.vatByRate?.[r] || 0);
-    return `<div>${r}% → Base ${b} · IVA ${v}</div>`;
+   const showRates = (usedRates.length ? usedRates : ["0"]);
+
+  const vatRows = showRates.map(r => {
+    const base = Number(summary.baseByRate?.[r] || 0);
+    const vat = Number(summary.vatByRate?.[r] || 0);
+    const tot = base + vat;
+
+    return `
+      <tr>
+        <td style="padding:6px 8px; border-top:1px solid rgba(185,196,226,.25);">${r}%</td>
+        <td style="padding:6px 8px; border-top:1px solid rgba(185,196,226,.25); text-align:right;">${money(base)}</td>
+        <td style="padding:6px 8px; border-top:1px solid rgba(185,196,226,.25); text-align:right;">${money(vat)}</td>
+        <td style="padding:6px 8px; border-top:1px solid rgba(185,196,226,.25); text-align:right;"><b>${money(tot)}</b></td>
+      </tr>
+    `;
   }).join("");
 
-  vatBox.innerHTML = `
+    vatBox.innerHTML = `
     <div class="item" style="margin-top:10px;">
-      <div>
+      <div style="min-width:220px;">
         <div class="item__title">Desglose IVA</div>
-        <div class="item__meta">Base e IVA por tipo</div>
+        <div class="item__meta">Base, IVA y total por tipo</div>
       </div>
-      <div style="text-align:right">
-        ${vatLines}
+      <div style="flex:1;">
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <thead>
+            <tr>
+              <th style="text-align:left; padding:6px 8px; border-bottom:1px solid rgba(185,196,226,.35);">Tipo</th>
+              <th style="text-align:right; padding:6px 8px; border-bottom:1px solid rgba(185,196,226,.35);">Base</th>
+              <th style="text-align:right; padding:6px 8px; border-bottom:1px solid rgba(185,196,226,.35);">IVA</th>
+              <th style="text-align:right; padding:6px 8px; border-bottom:1px solid rgba(185,196,226,.35);">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${vatRows}
+          </tbody>
+        </table>
       </div>
     </div>
   `;
