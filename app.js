@@ -686,7 +686,22 @@ function openInvoiceForm(inv=null){
   const conceptLab = el("div","muted small"); conceptLab.textContent = "Concepto";
   const concept = el("input","input"); concept.value = inv?.concept || "";
   conceptWrap.appendChild(conceptLab); conceptWrap.appendChild(concept);
+    // IVA mixto (varias líneas)
+  const mixedWrap = el("div","full");
+  const mixedLabel = el("label");
+  mixedLabel.style.display = "flex";
+  mixedLabel.style.gap = "10px";
+  mixedLabel.style.alignItems = "center";
 
+  const mixedChk = el("input");
+  mixedChk.type = "checkbox";
+
+  const mixedTxt = el("div");
+  mixedTxt.innerHTML = `<b>IVA mixto</b> <span class="muted small">(varias líneas)</span>`;
+
+  mixedLabel.appendChild(mixedChk);
+  mixedLabel.appendChild(mixedTxt);
+  mixedWrap.appendChild(mixedLabel);
   const baseWrap = el("div");
   const baseLab = el("div","muted small"); baseLab.textContent = "Base imponible (€)";
   const base = el("input","input"); base.inputMode="decimal";
