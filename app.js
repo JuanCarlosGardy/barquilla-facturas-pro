@@ -1170,6 +1170,28 @@ function exportCsv(title, periodLabel, list, summary){
   rows.push(["Desglose IVA","Base","IVA"].join(";"));
   ["0","4","10","21"].forEach(r=>{
     rows.push([`${r}%`, summary.baseByRate[r]||0, summary.vatByRate[r]||0].join(";"));
+      // Bloque “contable” en una sola fila (fácil de importar/copiar)
+  const r0b = summary.baseByRate["0"] || 0,  r0v = summary.vatByRate["0"] || 0;
+  const r4b = summary.baseByRate["4"] || 0,  r4v = summary.vatByRate["4"] || 0;
+  const r10b = summary.baseByRate["10"] || 0, r10v = summary.vatByRate["10"] || 0;
+  const r21b = summary.baseByRate["21"] || 0, r21v = summary.vatByRate["21"] || 0;
+
+  rows.push(["Resumen por tipos (base/iva/total)"].join(";"));
+  rows.push([
+    "Base_0","IVA_0","Total_0",
+    "Base_4","IVA_4","Total_4",
+    "Base_10","IVA_10","Total_10",
+    "Base_21","IVA_21","Total_21"
+  ].join(";"));
+
+  rows.push([
+    r0b, r0v, (r0b + r0v),
+    r4b, r4v, (r4b + r4v),
+    r10b, r10v, (r10b + r10v),
+    r21b, r21v, (r21b + r21v)
+  ].join(";"));
+
+  rows.push([""].join(";"));
   });
   rows.push([""].join(";"));
   rows.push(["Facturas incluidas"].join(";"));
