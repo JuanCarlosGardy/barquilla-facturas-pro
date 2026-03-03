@@ -795,10 +795,11 @@ function openInvoiceForm(inv=null){
   checkDuplicates();
 
   [
-    pWrap, fDateWrap, fNoWrap, radar,
-    conceptWrap, baseWrap, vatWrap, calcWrap,
-    paidWrap, attachWrap, attachInfo
-  ].forEach(n=> form.appendChild(n));
+  pWrap, fDateWrap, fNoWrap, radar,
+  conceptWrap, mixedWrap,
+  baseWrap, vatWrap, calcWrap, mixedBox,
+  paidWrap, attachWrap, attachInfo
+].forEach(n=> form.appendChild(n));
 
   body.appendChild(form);
 
