@@ -943,7 +943,22 @@ function renderReport(title, periodLabel, list, summary){
   `;
   out.appendChild(totals);
 
+    // --- Desglose IVA: mostrar solo tipos usados ---
   const vatBox = el("div","mt");
+
+  const rates = ["0","4","10","21"];
+  const usedRates = rates.filter(r => {
+    const b = Number(summary.baseByRate?.[r] || 0);
+    const v = Number(summary.vatByRate?.[r] || 0);
+    return b > 0 || v > 0;
+  });
+
+  const vatLines = (usedRates.length ? usedRates : ["0"]).map(r => {
+    const b = money(summary.baseByRate?.[r] || 0);
+    const v = money(summary.vatByRate?.[r] || 0);
+    return `<div>${r}% → Base ${b} · IVA ${v}</div>`;
+  }).join("");
+
   vatBox.innerHTML = `
     <div class="item" style="margin-top:10px;">
       <div>
@@ -951,10 +966,7 @@ function renderReport(title, periodLabel, list, summary){
         <div class="item__meta">Base e IVA por tipo</div>
       </div>
       <div style="text-align:right">
-        <div>0% → Base ${money(summary.baseByRate["0"]||0)} · IVA ${money(summary.vatByRate["0"]||0)}</div>
-        <div>4% → Base ${money(summary.baseByRate["4"]||0)} · IVA ${money(summary.vatByRate["4"]||0)}</div>
-        <div>10% → Base ${money(summary.baseByRate["10"]||0)} · IVA ${money(summary.vatByRate["10"]||0)}</div>
-        <div>21% → Base ${money(summary.baseByRate["21"]||0)} · IVA ${money(summary.vatByRate["21"]||0)}</div>
+        ${vatLines}
       </div>
     </div>
   `;
