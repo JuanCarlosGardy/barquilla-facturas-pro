@@ -926,10 +926,40 @@ function openInvoiceForm(inv=null){
       const prov = providersCache.find(p=>p.id===providerId);
       if(!prov) return toast("Proveedor no válido.", "err");
 
-      const baseVal = +safeNum(base.value).toFixed(2);
-      const vatRate = +safeNum(vatSel.value);
-      const vatAmount = +(baseVal * (vatRate/100)).toFixed(2);
-      const total = +(baseVal + vatAmount).toFixed(2);
+      // --- Cálculo importes: simple o mixto ---
+let baseVal = 0;
+let vatRate = +safeNum(vatSel.value);
+let vatAmount = 0;
+let total = 0;
+
+let lines = null;
+
+if (typeof mixedChk !== "undefined" && mixedChk.checked) {
+  lines = getLines(); // usa las líneas del IVA mixto
+  if (!lines.length) return toast("Añade al menos una línea con base.", "err");
+
+  for (const l of lines) {
+    const b = +safeNum(l.base);
+    const r = +safeNum(l.vatRate);
+    const v = +(b * (r / 100)).toFixed(2);
+
+    baseVal += b;
+    vatAmount += v;
+    total += (b + v);
+  }
+
+  baseVal = +baseVal.toFixed(2);
+  vatAmount = +vatAmount.toFixed(2);
+  total = +total.toFixed(2);
+
+  // En mixto, vatRate no representa nada único
+  vatRate = null;
+} else {
+  baseVal = +safeNum(base.value).toFixed(2);
+  vatRate = +safeNum(vatSel.value);
+  vatAmount = +(baseVal * (vatRate / 100)).toFixed(2);
+  total = +(baseVal + vatAmount).toFixed(2);
+}
 
       const data = {
         providerId,
@@ -941,6 +971,7 @@ function openInvoiceForm(inv=null){
         vatRate,
         vatAmount,
         total,
+        ...(lines ? { lines } : {}),
         paidDate: paid.value || (fDate.value || ymdToday()),
         updatedAt: serverTimestamp()
       };
