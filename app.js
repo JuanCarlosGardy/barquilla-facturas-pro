@@ -938,6 +938,7 @@ function openInvoiceForm(inv=null){
         vatRate,
         vatAmount,
         total,
+        ...(lines ? { lines } : {}),
         paidDate: paid.value || (fDate.value || ymdToday()),
         updatedAt: serverTimestamp()
       };
