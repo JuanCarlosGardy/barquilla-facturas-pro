@@ -926,10 +926,7 @@ function openInvoiceForm(inv=null){
       const prov = providersCache.find(p=>p.id===providerId);
       if(!prov) return toast("Proveedor no válido.", "err");
 
-      const baseVal = +safeNum(base.value).toFixed(2);
-      const vatRate = +safeNum(vatSel.value);
-      const vatAmount = +(baseVal * (vatRate/100)).toFixed(2);
-      const total = +(baseVal + vatAmount).toFixed(2);
+      const baseVal = +safeNum(base.value
 
       const data = {
         providerId,
