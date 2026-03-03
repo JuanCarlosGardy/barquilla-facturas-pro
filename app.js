@@ -1049,14 +1049,23 @@ function summarizeByProvider(invoiceList){
       ).join("")
     : "—";
 
+    // Si hay muchas categorías, por defecto lo dejamos plegado en pantalla
+  const catDefaultOpen = catSum.length <= 6 ? "open" : "";
+
   catBox.innerHTML = `
     <div class="item" style="margin-top:10px;">
       <div>
         <div class="item__title">Totales por categoría</div>
-        <div class="item__meta">Suma de totales por tipo de proveedor</div>
+        <div class="item__meta">Base e IVA por tipo de proveedor</div>
       </div>
+
       <div style="text-align:right">
-        ${catLines}
+        <details class="repDetails" ${catDefaultOpen}>
+          <summary class="repSummary">Ver/ocultar desglose</summary>
+          <div class="repContent" style="margin-top:8px;">
+            ${catLines}
+          </div>
+        </details>
       </div>
     </div>
   `;
