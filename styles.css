@@ -248,8 +248,49 @@ body{
 
 /* Impresión A4 */
 @media print{
-  body{ background: #fff; color:#111; }
-  .topbar, .tabs, .filters, .panel__head .btn, .toasts, #btnLogout{ display:none !important; }
-  .panel{ border:none; background:#fff; }
-  .reportOut{ border:none; }
+  /* A4 limpio */
+  @page { size: A4; margin: 12mm; }
+
+  /* Colores correctos en PDF (algunos navegadores los “apagan”) */
+  *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body{ background:#fff !important; color:#111 !important; }
+
+  /* Ocultar UI que no debe salir en PDF */
+  .topbar,
+  .tabs,
+  .filters,
+  .panel__head,
+  .toasts,
+  #btnLogout,
+  .reports {               /* <-- esto oculta las cajas de mensual + trimestral */
+    display:none !important;
+  }
+
+  /* Ocultar botones dentro del informe generado */
+  .reportOut .row,
+  .reportOut button {
+    display:none !important;
+  }
+
+  /* Dejar el informe como “documento” */
+  .panel{
+    border:none !important;
+    background:#fff !important;
+    padding:0 !important;
+  }
+
+  .reportOut{
+    border:none !important;
+    margin-top:0 !important;
+    padding:0 !important;
+  }
+
+  /* Mejor lectura en impresión */
+  .item{
+    background:#fff !important;
+    border:1px solid #ddd !important;
+  }
+
+  .muted{ color:#444 !important; }
 }
