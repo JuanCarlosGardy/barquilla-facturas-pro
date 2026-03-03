@@ -739,6 +739,85 @@ function openInvoiceForm(inv=null){
   mixedBox.appendChild(mixedInfo);
   mixedBox.appendChild(linesHost);
   mixedBox.appendChild(btnAddLine);
+    function makeRateSelect(selected="10"){
+    const s = el("select","input");
+    [0,4,10,21].forEach(v=>{
+      const o = el("option"); o.value = String(v); o.textContent = `${v}%`;
+      if(String(v)===String(selected)) o.selected = true;
+      s.appendChild(o);
+    });
+    return s;
+  }
+
+  function addLineRow(line={concept:"", base:"", vatRate:"10"}){
+    const row = el("div","row");
+    row.style.gap = "8px";
+    row.style.alignItems = "center";
+
+    const c = el("input","input");
+    c.placeholder = "Concepto (opcional)";
+    c.value = line.concept || "";
+
+    const b = el("input","input");
+    b.inputMode = "decimal";
+    b.placeholder = "Base";
+    b.style.textAlign = "right";
+    b.value = (line.base ?? "").toString();
+
+    const r = makeRateSelect(line.vatRate ?? "10");
+
+    const del = el("button","btn danger");
+    del.type = "button";
+    del.textContent = "X";
+
+    del.addEventListener("click", ()=>{
+      row.remove();
+      recalcMixed();
+    });
+
+    [c,b,r].forEach(x=>{
+      x.addEventListener("input", recalcMixed);
+      x.addEventListener("change", recalcMixed);
+    });
+
+    row.appendChild(c);
+    row.appendChild(b);
+    row.appendChild(r);
+    row.appendChild(del);
+
+    row._c = c; row._b = b; row._r = r;
+    linesHost.appendChild(row);
+  }
+
+  function getLines(){
+    const rows = Array.from(linesHost.children);
+    return rows.map(row=>{
+      const concept = row._c?.value?.trim() || "";
+      const base = +safeNum(row._b?.value || 0);
+      const vatRate = String(row._r?.value || "0");
+      return { concept, base: +base.toFixed(2), vatRate };
+    }).filter(l => l.base > 0);
+  }
+
+  function recalcMixed(){
+    const lines = getLines();
+    let baseSum = 0, vatSum = 0, totalSum = 0;
+
+    for(const l of lines){
+      const rate = +safeNum(l.vatRate);
+      const v = +(l.base * (rate/100)).toFixed(2);
+      baseSum += l.base;
+      vatSum += v;
+      totalSum += (l.base + v);
+    }
+
+    baseSum = +baseSum.toFixed(2);
+    vatSum = +vatSum.toFixed(2);
+    totalSum = +totalSum.toFixed(2);
+
+    // Reutilizamos el texto del mixedInfo para mostrar totales sin tocar tu calcWrap actual
+    mixedInfo.textContent = `Líneas de IVA (una por tipo) — Totales: Base ${money(baseSum)} · IVA ${money(vatSum)} · Total ${money(totalSum)}`;
+  }
   const calc = el("div","pill");
   calcWrap.appendChild(calc);
 
