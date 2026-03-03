@@ -1071,14 +1071,23 @@ function summarizeByProvider(invoiceList){
       ).join("")
     : "—";
 
+   // Si hay muchos proveedores, por defecto lo dejamos plegado en pantalla
+  const defaultOpen = provSum.length <= 8 ? "open" : "";
+
   provBox.innerHTML = `
     <div class="item" style="margin-top:10px;">
       <div>
         <div class="item__title">Listado por proveedor</div>
         <div class="item__meta">Total por proveedor (ordenado de mayor a menor)</div>
       </div>
+
       <div style="text-align:right">
-        ${provLines}
+        <details class="repDetails" ${defaultOpen}>
+          <summary class="repSummary">Ver/ocultar listado completo</summary>
+          <div class="repContent" style="margin-top:8px;">
+            ${provLines}
+          </div>
+        </details>
       </div>
     </div>
   `;
@@ -1090,8 +1099,21 @@ function summarizeByProvider(invoiceList){
 
   const btnPdf = el("button","btn");
   btnPdf.textContent = "Generar PDF (Imprimir)";
-  btnPdf.addEventListener("click", ()=>{
-    // usamos CSS @media print + window.print()
+    btnPdf.addEventListener("click", ()=>{
+    const details = out.querySelectorAll("details.repDetails");
+    const prev = [];
+
+    details.forEach((d, idx) => {
+      prev[idx] = d.open;
+      d.open = true; // abrir todo para el PDF
+    });
+
+    const restore = () => {
+      details.forEach((d, idx) => d.open = prev[idx]);
+      window.removeEventListener("afterprint", restore);
+    };
+
+    window.addEventListener("afterprint", restore);
     window.print();
   });
 
