@@ -528,6 +528,7 @@ $("#btnAddInvoice").addEventListener("click", ()=> openInvoiceForm());
 $("#invSearch").addEventListener("input", ()=> renderInvoices());
 $("#invMonth").addEventListener("change", ()=> renderInvoices());
 $("#invVatRate").addEventListener("change", ()=> renderInvoices());
+$("#invProvider").addEventListener("change", ()=> renderInvoices());
 
 function renderInvoiceProviderOptions(selectEl, selectedId=""){
   // Si se pasa selectEl, lo rellena. Si no, no hace nada (usado en modal).
@@ -553,7 +554,9 @@ function invoiceMatches(i){
   const qTxt = $("#invSearch").value.trim().toLowerCase();
   const m = $("#invMonth").value; // YYYY-MM
   const vat = $("#invVatRate").value;
-
+    const pid = $("#invProvider")?.value || "";
+  
+  if(pid && String(i.providerId) !== String(pid)) return false;
   if(m && !(i.invoiceDate || "").startsWith(m)) return false;
   if(vat && String(i.vatRate) !== String(vat)) return false;
 
@@ -1246,6 +1249,22 @@ function runQuarterReport(year, q){
 async function refreshAll(){
   await fetchProviders();
   await fetchInvoices();
+
+  // Rellenar filtro de proveedor en pestaña Facturas
+  const invProv = $("#invProvider");
+  if(invProv){
+    invProv.innerHTML = `<option value="">Todos los proveedores</option>`;
+    const list = [...providersCache]
+      .sort((a,b)=>(a.nameCommercial||"").localeCompare(b.nameCommercial||""));
+
+    for(const p of list){
+      const o = document.createElement("option");
+      o.value = p.id;
+      o.textContent = p.nameCommercial || p.legalName || p.id;
+      invProv.appendChild(o);
+    }
+  }
+
   renderProviders();
   renderInvoices();
 }
