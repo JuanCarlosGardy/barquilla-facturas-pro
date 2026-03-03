@@ -719,6 +719,26 @@ function openInvoiceForm(inv=null){
   vatWrap.appendChild(vatLab); vatWrap.appendChild(vatSel);
 
   const calcWrap = el("div","full");
+    // Caja IVA mixto (oculta por defecto)
+  const mixedBox = el("div","full");
+  mixedBox.style.display = "none";
+
+  const mixedInfo = el("div","muted small");
+  mixedInfo.textContent = "Líneas de IVA (una por tipo)";
+  mixedInfo.style.marginBottom = "6px";
+
+  const linesHost = el("div");
+  linesHost.style.display = "grid";
+  linesHost.style.gap = "8px";
+
+  const btnAddLine = el("button","btn");
+  btnAddLine.type = "button";
+  btnAddLine.textContent = "+ Añadir línea";
+  btnAddLine.style.marginTop = "8px";
+
+  mixedBox.appendChild(mixedInfo);
+  mixedBox.appendChild(linesHost);
+  mixedBox.appendChild(btnAddLine);
   const calc = el("div","pill");
   calcWrap.appendChild(calc);
 
