@@ -923,8 +923,20 @@ function renderReport(title, periodLabel, list, summary){
   const out = $("#reportOut");
   out.innerHTML = "";
 
-  const head = el("div");
-  head.innerHTML = `<div style="font-weight:900;font-size:18px;">${title}</div><div class="muted">${periodLabel}</div>`;
+    const head = el("div");
+
+  const avgPerInvoice = summary.count > 0 ? (summary.total / summary.count) : 0;
+  const vatRatio = summary.base > 0 ? ((summary.vat / summary.base) * 100) : 0;
+
+  head.innerHTML = `
+    <div style="font-weight:900;font-size:18px;">${title}</div>
+    <div class="muted">${periodLabel}</div>
+    <div class="muted small" style="margin-top:6px;">
+      Gasto medio por factura: <b>${money(avgPerInvoice)}</b> ·
+      Ratio IVA/Base: <b>${vatRatio.toFixed(2)}%</b>
+    </div>
+  `;
+  out.appendChild(head);
   out.appendChild(head);
 
   const totals = el("div","mt");
