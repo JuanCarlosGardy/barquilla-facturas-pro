@@ -987,15 +987,25 @@ function renderReport(title, periodLabel, list, summary){
     return b > 0 || v > 0;
   });
 function summarizeByProvider(invoiceList){
-  const map = new Map(); // providerName -> total
+  const map = new Map(); // providerName -> { base, vat, total }
 
   for(const inv of invoiceList){
     const name = (inv.providerName || "Proveedor").trim() || "Proveedor";
-    map.set(name, (map.get(name) || 0) + safeNum(inv.total));
+
+    const cur = map.get(name) || { base: 0, vat: 0, total: 0 };
+    cur.base += safeNum(inv.base);
+    cur.vat += safeNum(inv.vatAmount);
+    cur.total += safeNum(inv.total);
+    map.set(name, cur);
   }
 
   return [...map.entries()]
-    .map(([provider, total]) => ({ provider, total: +total.toFixed(2) }))
+    .map(([provider, v]) => ({
+      provider,
+      base: +v.base.toFixed(2),
+      vat: +v.vat.toFixed(2),
+      total: +v.total.toFixed(2)
+    }))
     .sort((a,b) => b.total - a.total);
 }
   const vatLines = (usedRates.length ? usedRates : ["0"]).map(r => {
@@ -1055,8 +1065,10 @@ function summarizeByProvider(invoiceList){
   const provSum = summarizeByProvider(list);
 
   const provBox = el("div","mt");
-  const provLines = provSum.length
-    ? provSum.map(p => `<div>${p.provider}: <b>${money(p.total)}</b></div>`).join("")
+    const provLines = provSum.length
+    ? provSum.map(p =>
+        `<div>${p.provider}: <b>${money(p.total)}</b><div class="muted small">Base ${money(p.base)} · IVA ${money(p.vat)}</div></div>`
+      ).join("")
     : "—";
 
   provBox.innerHTML = `
