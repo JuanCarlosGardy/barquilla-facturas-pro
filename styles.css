@@ -294,3 +294,14 @@ body{
 
   .muted{ color:#444 !important; }
 }
+.repSummary{
+  cursor:pointer;
+  font-weight:700;
+  color: var(--text);
+  list-style: none;
+}
+.repSummary::-webkit-details-marker{ display:none; }
+
+.repContent > div{
+  margin-bottom: 6px;
+}
