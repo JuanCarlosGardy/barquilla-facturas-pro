@@ -99,17 +99,20 @@
         <button id="btnAddInvoice" class="btn">+ Nueva factura</button>
       </div>
 
-      <div class="filters">
-        <input id="invSearch" class="input" placeholder="Buscar (proveedor, nº, concepto…)" />
-        <input id="invMonth" class="input" type="month" />
-        <select id="invVatRate" class="input">
-          <option value="">IVA (todos)</option>
-          <option value="0">0%</option>
-          <option value="4">4%</option>
-          <option value="10">10%</option>
-          <option value="21">21%</option>
-        </select>
-      </div>
+     <div class="filters">
+  <input id="invSearch" class="input" placeholder="Buscar (proveedor, nº, concepto…)" />
+  <input id="invMonth" class="input" type="month" />
+  <select id="invProvider" class="input">
+    <option value="">Todos los proveedores</option>
+  </select>
+  <select id="invVatRate" class="input">
+    <option value="">IVA (todos)</option>
+    <option value="0">0%</option>
+    <option value="4">4%</option>
+    <option value="10">10%</option>
+    <option value="21">21%</option>
+  </select>
+</div>
 
       <div id="invoicesList" class="list"></div>
     </section>
