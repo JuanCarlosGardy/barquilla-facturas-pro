@@ -918,7 +918,19 @@ function summarizeInvoices(list){
 
   return sum;
 }
+function summarizeByCategory(invoiceList){
+  const map = new Map(); // category -> total
 
+  for(const inv of invoiceList){
+    const prov = providersCache.find(p => p.id === inv.providerId);
+    const cat = (prov?.category || "Sin categoría").trim() || "Sin categoría";
+    map.set(cat, (map.get(cat) || 0) + safeNum(inv.total));
+  }
+
+  return [...map.entries()]
+    .map(([category, total]) => ({ category, total: +total.toFixed(2) }))
+    .sort((a,b) => b.total - a.total);
+}
 function renderReport(title, periodLabel, list, summary){
   const out = $("#reportOut");
   out.innerHTML = "";
@@ -996,7 +1008,26 @@ function renderReport(title, periodLabel, list, summary){
     </div>
   `;
   out.appendChild(top);
+  // --- Totales por categoría de proveedor ---
+  const catSum = summarizeByCategory(list);
 
+  const catBox = el("div","mt");
+  const catLines = catSum.length
+    ? catSum.map(c => `<div>${c.category}: <b>${money(c.total)}</b></div>`).join("")
+    : "—";
+
+  catBox.innerHTML = `
+    <div class="item" style="margin-top:10px;">
+      <div>
+        <div class="item__title">Totales por categoría</div>
+        <div class="item__meta">Suma de totales por tipo de proveedor</div>
+      </div>
+      <div style="text-align:right">
+        ${catLines}
+      </div>
+    </div>
+  `;
+  out.appendChild(catBox);
   const actions = el("div","row mt");
   const btnCsv = el("button","btn btn--secondary");
   btnCsv.textContent = "Exportar CSV";
