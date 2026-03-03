@@ -818,6 +818,40 @@ function openInvoiceForm(inv=null){
     // Reutilizamos el texto del mixedInfo para mostrar totales sin tocar tu calcWrap actual
     mixedInfo.textContent = `Líneas de IVA (una por tipo) — Totales: Base ${money(baseSum)} · IVA ${money(vatSum)} · Total ${money(totalSum)}`;
   }
+    btnAddLine.addEventListener("click", ()=>{
+    addLineRow({concept:"", base:"", vatRate:"10"});
+    recalcMixed();
+  });
+
+  mixedChk.addEventListener("change", ()=>{
+    const on = mixedChk.checked;
+
+    // ocultar modo simple
+    baseWrap.style.display = on ? "none" : "";
+    vatWrap.style.display = on ? "none" : "";
+    calcWrap.style.display = on ? "none" : "";
+
+    // mostrar modo mixto
+    mixedBox.style.display = on ? "" : "none";
+
+    if(on && linesHost.children.length === 0){
+      addLineRow({concept:"", base:"", vatRate:"10"});
+    }
+    recalcMixed();
+  });
+
+  // Si editamos una factura que ya tenga líneas, activar y cargar
+  if(inv?.lines?.length){
+    mixedChk.checked = true;
+    baseWrap.style.display = "none";
+    vatWrap.style.display = "none";
+    calcWrap.style.display = "none";
+    mixedBox.style.display = "";
+
+    linesHost.innerHTML = "";
+    inv.lines.forEach(l => addLineRow(l));
+    recalcMixed();
+  }
   const calc = el("div","pill");
   calcWrap.appendChild(calc);
 
