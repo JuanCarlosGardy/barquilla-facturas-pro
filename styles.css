@@ -445,4 +445,52 @@ body{
 .report-print-header .meta strong{
   font-weight: 700;
 }
+  /* ===============================
+   MEJORA SALTOS DE PÁGINA EN PDF
+   (pegar dentro de @media print)
+   =============================== */
+
+/* 1) Evita títulos aislados al final de página */
+@media print {
+  h1, h2, h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}
+
+/* 2) La cabecera nunca debe partirse */
+@media print {
+  .report-print-header {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* 3) Bloques típicos del informe: evita que se partan */
+@media print {
+  /* Ajusta aquí según tus clases reales: card, panel, etc. */
+  .card,
+  .panel,
+  .section,
+  .block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* 4) Si hay tablas: que no parta filas */
+@media print {
+  table, tr, td, th {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* 5) Permite que el contenedor general sí pueda fluir */
+@media print {
+  #reportOut {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+}
 }
