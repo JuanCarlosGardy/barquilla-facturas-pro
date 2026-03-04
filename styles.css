@@ -497,4 +497,42 @@ body{
     break-inside: avoid;
     page-break-inside: avoid;
   }
+  /* ===============================
+   LISTADO POR PROVEEDOR (PRINT)
+   - Permite paginar el listado
+   - Evita partir cada proveedor
+   =============================== */
+
+/* 1) El listado completo debe poder romper página (si no, fuerza cortes feos) */
+@media print {
+  .report-print-root {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+}
+
+/* 2) Evita que cada item “Proveedor + Base/IVA” se parta
+   Nota: como tu listado parece estar en líneas (sin tabla),
+   aplicamos reglas a párrafos y elementos de texto dentro del reportOut. */
+@media print {
+  /* Cada línea/bloque de texto del informe */
+  #reportOut p,
+  #reportOut li,
+  #reportOut .row,
+  #reportOut .line,
+  #reportOut .item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* 3) Que “Listado por proveedor” no se quede solo al final de página */
+@media print {
+  /* Si tu título es h2/h3 ya lo cubrimos, pero reforzamos */
+  #reportOut h2,
+  #reportOut h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}
 }
