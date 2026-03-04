@@ -305,3 +305,107 @@ body{
 .repContent > div{
   margin-bottom: 6px;
 }
+/* =========================
+   IMPRESIÓN (PDF / A4)
+   Pegar al FINAL del CSS
+   ========================= */
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+
+  /* Quita fondos/colores “modo app” */
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 11pt;
+    line-height: 1.25;
+  }
+
+  /* Ocultar toda la interfaz que no debe ir al PDF */
+  .no-print,
+  button,
+  .btn,
+  .toolbar,
+  nav,
+  header.app-header,
+  footer.app-footer,
+  input,
+  select,
+  textarea {
+    display: none !important;
+  }
+
+  /* Ocultar textos / controles de “Ver/ocultar…” */
+  .toggle,
+  .toggle-btn,
+  .toggle-link,
+  [data-toggle],
+  [data-action="toggle"],
+  .collapse-toggle {
+    display: none !important;
+  }
+
+  /* Asegura que el área de informe use todo el ancho A4 */
+  .report,
+  #report,
+  #reportRoot,
+  .report-root {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Títulos limpios */
+  h1 { font-size: 16pt; margin: 0 0 6mm 0; }
+  h2 { font-size: 12.5pt; margin: 5mm 0 3mm 0; }
+  h3 { font-size: 11pt; margin: 4mm 0 2mm 0; }
+
+  /* Tablas perfectas para gestoría */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2mm 0 4mm 0;
+  }
+  th, td {
+    border: 1px solid #000;
+    padding: 2mm 2.5mm;
+    vertical-align: top;
+  }
+  th { font-weight: 700; }
+
+  /* Evitar cortes feos */
+  tr, td, th, .card, .section, .block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Enlaces como texto normal (sin colores ni subrayado) */
+  a, a:visited {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+
+  /* Mini cabecera fija opcional si ya tienes un elemento header del informe */
+  .report-print-header {
+    display: block !important;
+    margin-bottom: 6mm;
+  }
+
+  /* Pie con numeración simple (si lo usas con contadores) */
+  .print-footer {
+    position: fixed;
+    bottom: 8mm;
+    left: 12mm;
+    right: 12mm;
+    font-size: 9pt;
+  }
+}
