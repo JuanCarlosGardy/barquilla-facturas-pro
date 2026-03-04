@@ -1082,6 +1082,7 @@ $("#btnRunMonthly").addEventListener("click", ()=> {
 $("#btnRunQuarter").addEventListener("click", ()=>{
   const year = Number($("#repYear").value || new Date().getFullYear());
   const q = Number($("#repQuarter").value);
+  setPrintHeader({ tipo: "Informe trimestral", periodo: `${year} Q${q}` });
   runQuarterReport(year, q);
 });
 $("#repYear").value = String(new Date().getFullYear());
