@@ -248,6 +248,8 @@ body{
 
 /* Impresión A4 */
 @media print{
+  /* TEST PRINT: si esto funciona, en la vista de impresión verás un borde rojo */
+body { outline: 6px solid red !important; }
   /* A4 limpio */
   @page { size: A4; margin: 12mm; }
 
