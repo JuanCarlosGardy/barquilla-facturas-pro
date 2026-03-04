@@ -492,5 +492,9 @@ body{
     break-inside: auto;
     page-break-inside: auto;
   }
-}
+@media print {
+  .report-print-root > * {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
