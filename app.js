@@ -1074,7 +1074,11 @@ async function deleteInvoiceFlow(inv){
 $("#repMonth").value = monthToday();
 $("#invMonth").value = monthToday();
 
-$("#btnRunMonthly").addEventListener("click", ()=> runMonthlyReport($("#repMonth").value));
+$("#btnRunMonthly").addEventListener("click", ()=> {
+  const month = $("#repMonth").value;
+  setPrintHeader({ tipo: "Informe mensual", periodo: month || "—" });
+  runMonthlyReport(month);
+});
 $("#btnRunQuarter").addEventListener("click", ()=>{
   const year = Number($("#repYear").value || new Date().getFullYear());
   const q = Number($("#repQuarter").value);
