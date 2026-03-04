@@ -1,6 +1,28 @@
 // app.js (ESM)
 import { auth, db, storage } from "./firebase.js";
+// ===============================
+// CABECERA IMPRESIÓN (PDF)
+// ===============================
+function setPrintHeader({ tipo, periodo }) {
+  const elPeriodo = document.getElementById('printPeriodo');
+  const elGen = document.getElementById('printGenerado');
 
+  if (elPeriodo) {
+    elPeriodo.textContent = `${tipo} · ${periodo}`;
+  }
+
+  if (elGen) {
+    const now = new Date();
+    const fmt = new Intl.DateTimeFormat('es-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    elGen.textContent = fmt.format(now);
+  }
+}
 import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
