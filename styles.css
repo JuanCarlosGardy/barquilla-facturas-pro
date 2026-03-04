@@ -248,8 +248,19 @@ body{
 
 /* Impresión A4 */
 @media print{
-  /* TEST PRINT: si esto funciona, en la vista de impresión verás un borde rojo */
-body { outline: 6px solid red !important; }
+  /* Limpieza y look “gestoría” */
+* { box-shadow: none !important; text-shadow: none !important; }
+
+.card, .panel, .box, .section {
+  border: 1px solid #000 !important;
+  border-radius: 0 !important;
+}
+
+/* Evita que el texto salga gris claro (muy típico en modo app) */
+.muted, .sub, .hint, small {
+  color: #000 !important;
+  opacity: 1 !important;
+}
   /* A4 limpio */
   @page { size: A4; margin: 12mm; }
 
