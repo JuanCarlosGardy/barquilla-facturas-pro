@@ -421,4 +421,28 @@ body{
     right: 12mm;
     font-size: 9pt;
   }
+  /* Cabecera profesional (solo impresión) */
+.report-print-header{
+  display: block !important;
+  border-bottom: 2px solid #000;
+  padding-bottom: 4mm;
+  margin-bottom: 6mm;
+}
+.report-print-header .h1{
+  font-size: 14pt;
+  font-weight: 800;
+  margin: 0 0 1.5mm 0;
+}
+.report-print-header .h2{
+  font-size: 11pt;
+  font-weight: 600;
+  margin: 0;
+}
+.report-print-header .meta{
+  font-size: 10pt;
+  margin-top: 2mm;
+}
+.report-print-header .meta strong{
+  font-weight: 700;
+}
 }
